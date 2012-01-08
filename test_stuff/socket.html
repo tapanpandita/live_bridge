@@ -8,11 +8,13 @@
         $(document).ready(function(){
             var socket = io.connect('http://localhost:3000');
             $('#msg_submit').click(function(){
-                socket.emit('message', {
-                    msg: $('#msg_input').val(),
-                    socket_id: $('#socket_id').val(),
-                });
-                $('#msg_input').val('');
+                if ( $.trim($('#msg_input').val()) ) {
+                    socket.emit('message', {
+                        msg: $('#msg_input').val(),
+                        socket_id: $('#socket_id').val(),
+                    });
+                    $('#msg_input').val('');
+                }
             });
             socket.on('message', function (data) {
                 if ( data.hasOwnProperty('socket_id') ) {
