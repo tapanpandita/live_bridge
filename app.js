@@ -17,11 +17,16 @@ var zmq = require('zmq')
   , sock = zmq.socket('push')
   , sock_recv = zmq.socket('pull');
 
+var socket_list = [];
+
 sock.bindSync('tcp://127.0.0.1:5000');
 sock_recv.connect('tcp://127.0.0.1:5001');
 
 sock_recv.on('message', function(msg){
   console.log(JSON.parse(msg));
+  for (var i=0; i < socket_list.length; i++) {
+    socket_list[i].emit('message', JSON.parse(msg));
+  }
 });
 
 // Configuration
@@ -50,7 +55,8 @@ app.get('/', routes.index);
 app.listen(3000);
 
 io.sockets.on('connection', function (socket) {
-  socket.emit('message', { msg: 'Connected' });
+  socket.emit('message', { msg: 'Connected!'});
+  socket_list.push(socket);
   socket.on('message', function (data) {
     sock.send(JSON.stringify(data));
     console.log(data);
