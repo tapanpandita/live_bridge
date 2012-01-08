@@ -59,6 +59,7 @@ app.listen(3000);
 io.sockets.on('connection', function(socket) {
   sock_uuid = uuid.v1();
   socket_list[sock_uuid] = socket;
+  console.log('@@@@@@@@@@@@@@@@@@@    ' + socket.id + '   @@@@@@@@@@@@@@@');
   socket.emit('message', {
     msg: 'Connected!',
     socket_id: sock_uuid,
