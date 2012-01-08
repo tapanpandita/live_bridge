@@ -17,16 +17,18 @@ var zmq = require('zmq')
   , sock = zmq.socket('push')
   , sock_recv = zmq.socket('pull');
 
-var socket_list = [];
+var uuid = require('node-uuid');
+
+var socket_list = {};
+
+var sock_uuid;
 
 sock.bindSync('tcp://127.0.0.1:5000');
 sock_recv.connect('tcp://127.0.0.1:5001');
 
 sock_recv.on('message', function(msg){
   console.log(JSON.parse(msg));
-  for (var i=0; i < socket_list.length; i++) {
-    socket_list[i].emit('message', JSON.parse(msg));
-  }
+  socket_list[JSON.parse(msg).socket_id].emit('message', JSON.parse(msg));
 });
 
 // Configuration
@@ -55,17 +57,22 @@ app.get('/', routes.index);
 app.listen(3000);
 
 io.sockets.on('connection', function(socket) {
-  socket.emit('message', { msg: 'Connected!'});
-  socket_list.push(socket);
+  sock_uuid = uuid.v1();
+  socket_list[sock_uuid] = socket;
+  socket.emit('message', {
+    msg: 'Connected!',
+    socket_id: sock_uuid,
+  });
   socket.on('message', function(data) {
     sock.send(JSON.stringify(data));
     console.log(data);
-    for (var i=0; i < socket_list.length; i++) {
-      socket_list[i].emit('message', data);
-    }
   });
   socket.on('disconnect', function(socket) {
-    socket_list = socket_list.splice(socket);
+    for (var key in socket_list) {
+      if ( socket_list[key] == socket ) {
+        delete(socket_list[key]);
+      }
+    }
   });
 });
 
