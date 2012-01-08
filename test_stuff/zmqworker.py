@@ -10,5 +10,5 @@ socket_push.bind("tcp://127.0.0.1:5001")
 while True:
     data = socket.recv()
     d = simplejson.loads(data)
-    socket_push.send(simplejson.dumps({'msg': 'received'}))
+    socket_push.send(simplejson.dumps({'msg': 'received - IN PYTHON!'}))
     print d
