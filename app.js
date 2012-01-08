@@ -1,3 +1,7 @@
+/**
+ * This project attempts to create a bridge between node.js and python applications
+ */
+
 
 /**
  * Module dependencies.
