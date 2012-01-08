@@ -44,10 +44,11 @@ app.get('/', routes.index);
 app.listen(3000);
 
 io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    sock.send({'hello': 'world'});
+  socket.emit('message', { msg: 'Connected' });
+  socket.on('message', function (data) {
+    sock.send(JSON.stringify(data));
     console.log(data);
+    socket.emit('message', { msg: data.msg });
   });
 });
 

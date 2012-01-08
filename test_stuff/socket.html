@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sockets and stuff</title>
+    <script type="text/javascript" src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/jquery-1.7.1.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var socket = io.connect('http://localhost:3000');
+            $('#msg_submit').click(function(){
+                socket.emit('message', {msg: $('#msg_input').val()});
+                $('#msg_input').val('');
+            });
+            socket.on('message', function (data) {
+                $('#msg_div').append('<p>'+ data.msg +'</p>');
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="msg_div"></div>
+    <input type="text" name="msg" id="msg_input" /><br />
+    <p><a href="#submit" id="msg_submit">SUBMIT</a></p>
+</body>
+</html>
