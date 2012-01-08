@@ -1,0 +1,2 @@
+A bridge for passing messages between node.js and python.
+Node.js holds the persistent connections and passes messages over zeromq to the application which is written in python.
