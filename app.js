@@ -54,13 +54,18 @@ app.get('/', routes.index);
 
 app.listen(3000);
 
-io.sockets.on('connection', function (socket) {
+io.sockets.on('connection', function(socket) {
   socket.emit('message', { msg: 'Connected!'});
   socket_list.push(socket);
-  socket.on('message', function (data) {
+  socket.on('message', function(data) {
     sock.send(JSON.stringify(data));
     console.log(data);
-    socket.emit('message', { msg: data.msg });
+    for (var i=0; i < socket_list.length; i++) {
+      socket_list[i].emit('message', data);
+    }
+  });
+  socket.on('disconnect', function(socket) {
+    socket_list = socket_list.splice(socket);
   });
 });
 
