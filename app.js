@@ -14,9 +14,15 @@ var app = module.exports = express.createServer();
 var io = require('socket.io').listen(app);
 
 var zmq = require('zmq')
-  , sock = zmq.socket('push');
+  , sock = zmq.socket('push')
+  , sock_recv = zmq.socket('pull');
 
 sock.bindSync('tcp://127.0.0.1:5000');
+sock_recv.connect('tcp://127.0.0.1:5001');
+
+sock_recv.on('message', function(msg){
+  console.log(JSON.parse(msg));
+});
 
 // Configuration
 
